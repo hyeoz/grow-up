@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
-import { green, ivory } from '@/styles/palette';
+import { green, ivory } from '@/assets/palette';
 
 interface CaptureScreenProps {
   onCapture: (imageUri: string) => void;
@@ -25,7 +25,7 @@ const CaptureScreen: React.FC<CaptureScreenProps> = ({ onCapture }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>사진 찍기</Text>
-      
+
       <View style={styles.previewContainer}>
         {imageUri ? (
           <Image source={{ uri: imageUri }} style={styles.preview} />
@@ -37,16 +37,13 @@ const CaptureScreen: React.FC<CaptureScreenProps> = ({ onCapture }) => {
       </View>
 
       <View style={styles.buttonContainer}>
-        <TouchableOpacity 
-          style={styles.captureButton} 
-          onPress={handleCapture}
-        >
+        <TouchableOpacity style={styles.captureButton} onPress={handleCapture}>
           <Text style={styles.buttonText}>사진 촬영</Text>
         </TouchableOpacity>
-        
+
         {imageUri && (
-          <TouchableOpacity 
-            style={[styles.captureButton, styles.confirmButton]} 
+          <TouchableOpacity
+            style={[styles.captureButton, styles.confirmButton]}
             onPress={handleConfirm}
           >
             <Text style={styles.buttonText}>이 사진 사용하기</Text>
@@ -67,7 +64,9 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color: green[300],
+    textAlign: 'center',
     marginBottom: 20,
+    fontFamily: 'Nanum_hana',
   },
   previewContainer: {
     width: '100%',
@@ -88,6 +87,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  previewText: {
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: 20,
+    fontSize: 16,
+    fontFamily: 'Nanum_hana',
+  },
   buttonContainer: {
     gap: 10,
   },
@@ -104,6 +110,8 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+    textAlign: 'center',
+    fontFamily: 'Nanum_hana',
   },
 });
 

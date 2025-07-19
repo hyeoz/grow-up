@@ -31,6 +31,8 @@
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>지금 바로 사진을 찍어 식물을 분석할 수 있도록 카메라를 허용해주세요!</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
 	<key>RCTNewArchEnabled</key>
@@ -40,6 +42,10 @@
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>arm64</string>
+	</array>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Nanum_hana.ttf</string>
 	</array>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>

@@ -1,6 +1,13 @@
 import React from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
-import { green, ivory } from '@/styles/palette';
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+} from 'react-native';
+import { green, ivory } from '@/assets/palette';
 
 interface ResultScreenProps {
   result: {
@@ -18,36 +25,38 @@ const ResultScreen: React.FC<ResultScreenProps> = ({ result, onRestart }) => {
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.title}>분석 결과</Text>
-      
+
       <View style={styles.imageContainer}>
         <Image source={{ uri: result.imageUri }} style={styles.image} />
       </View>
-      
+
       <View style={styles.resultContainer}>
         <View style={styles.resultItem}>
           <Text style={styles.resultLabel}>성장 단계:</Text>
           <Text style={styles.resultValue}>{result.analysis.growthStage}</Text>
         </View>
-        
+
         <View style={styles.resultItem}>
           <Text style={styles.resultLabel}>건강 상태:</Text>
           <Text style={styles.resultValue}>{result.analysis.health}</Text>
         </View>
-        
+
         <View style={styles.resultItem}>
           <Text style={styles.resultLabel}>추천:</Text>
-          <Text style={styles.resultValue}>{result.analysis.recommendation}</Text>
+          <Text style={styles.resultValue}>
+            {result.analysis.recommendation}
+          </Text>
         </View>
       </View>
-      
+
       <View style={styles.infoContainer}>
         <Text style={styles.infoTitle}>추가 정보</Text>
         <Text style={styles.infoText}>
-          식물의 성장을 관찰하며 정기적으로 사진을 찍어 기록하세요. 
-          이렇게 하면 시간에 따른 변화를 더 잘 파악할 수 있습니다.
+          식물의 성장을 관찰하며 정기적으로 사진을 찍어 기록하세요. 이렇게 하면
+          시간에 따른 변화를 더 잘 파악할 수 있습니다.
         </Text>
       </View>
-      
+
       <TouchableOpacity style={styles.button} onPress={onRestart}>
         <Text style={styles.buttonText}>다시 찍기</Text>
       </TouchableOpacity>
@@ -66,6 +75,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: green[300],
     marginBottom: 20,
+    fontFamily: 'Nanum_hana',
   },
   imageContainer: {
     width: '100%',
@@ -99,11 +109,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: green[300],
+    fontFamily: 'Nanum_hana',
   },
   resultValue: {
     flex: 1,
     fontSize: 16,
     color: '#333',
+    fontFamily: 'Nanum_hana',
   },
   infoContainer: {
     backgroundColor: 'white',
@@ -121,11 +133,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: green[300],
     marginBottom: 10,
+    fontFamily: 'Nanum_hana',
   },
   infoText: {
     fontSize: 14,
     color: '#555',
     lineHeight: 20,
+    fontFamily: 'Nanum_hana',
   },
   button: {
     backgroundColor: green[200],
@@ -138,6 +152,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+    fontFamily: 'Nanum_hana',
   },
 });
 

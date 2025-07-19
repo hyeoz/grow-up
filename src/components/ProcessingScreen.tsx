@@ -1,24 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
-import { green, ivory } from '@/styles/palette';
+import { green, ivory } from '@/assets/palette';
 
 interface ProcessingScreenProps {
   imageUri: string;
   onProcessingComplete: (result: any) => void;
 }
 
-const ProcessingScreen: React.FC<ProcessingScreenProps> = ({ 
-  imageUri, 
-  onProcessingComplete 
+const ProcessingScreen: React.FC<ProcessingScreenProps> = ({
+  imageUri,
+  onProcessingComplete,
 }) => {
   const [progress, setProgress] = useState(0);
-  
+
   useEffect(() => {
     // Simulate processing with progress updates
     const interval = setInterval(() => {
       setProgress(prev => {
         const newProgress = prev + 5;
-        
+
         if (newProgress >= 100) {
           clearInterval(interval);
           // Mock processed result data
@@ -27,41 +27,36 @@ const ProcessingScreen: React.FC<ProcessingScreenProps> = ({
             analysis: {
               growthStage: '성장 단계 2',
               health: '양호',
-              recommendation: '물을 더 주세요'
-            }
+              recommendation: '물을 더 주세요',
+            },
           };
-          
+
           // Wait a moment before completing to show 100%
           setTimeout(() => {
             onProcessingComplete(mockResult);
           }, 500);
-          
+
           return 100;
         }
-        
+
         return newProgress;
       });
     }, 200);
-    
+
     return () => clearInterval(interval);
   }, [imageUri, onProcessingComplete]);
-  
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>이미지 분석 중...</Text>
-      
+
       <View style={styles.progressContainer}>
         <View style={styles.progressBar}>
-          <View 
-            style={[
-              styles.progressFill, 
-              { width: `${progress}%` }
-            ]} 
-          />
+          <View style={[styles.progressFill, { width: `${progress}%` }]} />
         </View>
         <Text style={styles.progressText}>{progress}%</Text>
       </View>
-      
+
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color={green[300]} />
         <Text style={styles.processingText}>
@@ -88,6 +83,7 @@ const styles = StyleSheet.create({
     color: green[300],
     marginBottom: 30,
     textAlign: 'center',
+    fontFamily: 'Nanum_hana',
   },
   progressContainer: {
     marginBottom: 30,
@@ -107,6 +103,7 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     color: green[300],
     fontWeight: 'bold',
+    fontFamily: 'Nanum_hana',
   },
   loadingContainer: {
     alignItems: 'center',
@@ -116,6 +113,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: green[300],
     textAlign: 'center',
+    fontFamily: 'Nanum_hana',
   },
 });
 
