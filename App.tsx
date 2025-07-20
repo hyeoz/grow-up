@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   StatusBar,
   StyleSheet,
@@ -8,7 +9,7 @@ import {
 
 // Import our screen components
 import { ivory } from '@/styles/palette';
-import { globalTextStyle } from '@/styles/fonts';
+import { customFonts } from '@/styles/fonts';
 import { LandingScreen } from '@/components/LandingScreen';
 import CaptureScreen from '@/components/CaptureScreen';
 import ProcessingScreen from '@/components/ProcessingScreen';
@@ -17,7 +18,8 @@ import ResultScreen from '@/components/ResultScreen';
 // Define the app's screen states
 type AppScreen = 'landing' | 'capture' | 'processing' | 'result';
 
-// 전역 스타일 주석: 모든 컴포넌트의 스타일에 fontFamily: 'Nanum_hana' 적용
+// AsyncStorage key for checking first-time use
+const FIRST_TIME_KEY = 'app_first_time_open';
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
@@ -47,9 +49,34 @@ function App() {
   };
 
   // Handle get started action
-  const handleGetStarted = () => {
+  const handleGetStarted = async () => {
+    // Mark app as opened once the user has seen the landing page
+    try {
+      await AsyncStorage.setItem(FIRST_TIME_KEY, 'false');
+    } catch (error) {
+      console.error('Error saving first time status:', error);
+    }
     setCurrentScreen('capture');
   };
+
+  // Check if it's the first time opening the app
+  useEffect(() => {
+    const checkFirstTimeOpen = async () => {
+      try {
+        const value = await AsyncStorage.getItem(FIRST_TIME_KEY);
+        
+        // If value exists, this is not the first time opening the app
+        if (value !== null) {
+          // Skip landing page if it's not the first time
+          setCurrentScreen('capture');
+        }
+      } catch (error) {
+        console.error('Error checking first time status:', error);
+      }
+    };
+    
+    checkFirstTimeOpen();
+  }, []);
 
   // Render the current screen
   const renderScreen = () => {
@@ -90,7 +117,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: ivory[100],
-    ...globalTextStyle,
+    fontFamily: customFonts.nanumHana,
   },
 });
 
