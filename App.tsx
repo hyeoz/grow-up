@@ -7,7 +7,8 @@ import {
 } from 'react-native';
 
 // Import our screen components
-import { ivory } from '@/assets/palette';
+import { ivory } from '@/styles/palette';
+import { globalTextStyle } from '@/styles/fonts';
 import { LandingScreen } from '@/components/LandingScreen';
 import CaptureScreen from '@/components/CaptureScreen';
 import ProcessingScreen from '@/components/ProcessingScreen';
@@ -89,7 +90,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: ivory[100],
-    fontFamily: 'Nanum_hana',
+    ...globalTextStyle,
   },
 });
 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
-import { green, ivory } from '@/assets/palette';
+import { green, ivory } from '@/styles/palette';
+import { globalTextStyle } from '@/styles/fonts';
 
 interface CaptureScreenProps {
   onCapture: (imageUri: string) => void;
@@ -66,7 +67,7 @@ const styles = StyleSheet.create({
     color: green[300],
     textAlign: 'center',
     marginBottom: 20,
-    fontFamily: 'Nanum_hana',
+    ...globalTextStyle,
   },
   previewContainer: {
     width: '100%',
@@ -92,7 +93,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 20,
     fontSize: 16,
-    fontFamily: 'Nanum_hana',
+    ...globalTextStyle,
   },
   buttonContainer: {
     gap: 10,
@@ -111,7 +112,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
-    fontFamily: 'Nanum_hana',
+    ...globalTextStyle,
   },
 });
 

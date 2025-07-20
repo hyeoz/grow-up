@@ -12,3 +12,12 @@ export const ivory = {
   200: '#f8f7ef',
   300: '#f1efe0',
 };
+
+export const gray = {
+  100: '#ffffff',
+  200: '#f1efe0',
+  300: '#f8f7ef',
+  400: '#fcfcf7',
+  500: '#555',
+  900: '#000000',
+};

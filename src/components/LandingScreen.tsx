@@ -1,7 +1,7 @@
 import React from 'react';
 import {
-  Text,
   View,
+  Text,
   StyleSheet,
   Image,
   TouchableOpacity,
@@ -10,11 +10,14 @@ import {
 } from 'react-native';
 
 import LeafScanning from '@/assets/images/leaf_scanning.gif';
-import { green, ivory } from '@/assets/palette';
+import { gray, green, ivory } from '@/styles/palette';
+import { customFonts } from '@/styles/fonts';
 
 interface LandingScreenProps {
   onGetStarted: () => void;
 }
+
+// TODO 랜딩페이지 한 번만 열리도록 상태관리
 
 export const LandingScreen: React.FC<LandingScreenProps> = ({
   onGetStarted,
@@ -31,11 +34,10 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({
         </View>
 
         <View style={styles.welcomeSection}>
-          <Text style={styles.welcomeTitle}>환영합니다!</Text>
+          <Text style={styles.welcomeTitle}>반가워요!</Text>
           <Text style={styles.welcomeText}>
-            GrowUp은 당신의 식물 성장을 분석하고 관리하는 데 도움을 주는
-            앱입니다. 식물의 사진을 찍고 분석하여 최적의 관리 방법을
-            알려드립니다.
+            자라나요는 식물의 성장을 분석하고 관리하는 데 도움을 주는 앱이에요.
+            식물의 사진을 찍고 분석하여 최적의 관리 방법을 알려드릴게요!
           </Text>
         </View>
 
@@ -73,23 +75,23 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     paddingHorizontal: 20,
-    paddingBottom: 80, // 버튼 공간 확보
+    paddingBottom: 80,
   },
   header: {
     alignItems: 'center',
     marginTop: 30,
   },
   title: {
-    fontSize: 36,
+    fontSize: 40,
     fontWeight: 'bold',
     color: green[300],
-    fontFamily: 'Nanum_hana',
+    fontFamily: customFonts.nanumHana,
   },
   subtitle: {
     fontSize: 16,
     color: green[200],
     marginTop: 5,
-    fontFamily: 'Nanum_hana',
+    fontFamily: customFonts.nanumHana,
   },
   imageContainer: {
     alignItems: 'center',
@@ -97,15 +99,15 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   image: {
-    width: '60%',
-    height: '60%',
+    width: 150,
+    height: 150,
   },
   welcomeSection: {
     marginBottom: 30,
-    backgroundColor: 'white',
+    backgroundColor: gray[100],
     padding: 20,
     borderRadius: 10,
-    shadowColor: '#000',
+    shadowColor: gray[900],
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 3,
@@ -116,20 +118,20 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: green[300],
     marginBottom: 10,
-    fontFamily: 'Nanum_hana',
+    fontFamily: customFonts.nanumHana,
   },
   welcomeText: {
     fontSize: 15,
-    color: '#555',
+    color: gray[500],
     lineHeight: 22,
-    fontFamily: 'Nanum_hana',
+    fontFamily: customFonts.nanumSquareRound,
   },
   tipsSection: {
     marginBottom: 30,
-    backgroundColor: 'white',
+    backgroundColor: gray[100],
     padding: 20,
     borderRadius: 10,
-    shadowColor: '#000',
+    shadowColor: gray[900],
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 3,
@@ -140,13 +142,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: green[300],
     marginBottom: 15,
-    fontFamily: 'Nanum_hana',
+    fontFamily: customFonts.nanumHana,
   },
   tipsText: {
     fontSize: 14,
-    color: '#555',
+    color: gray[500],
     marginBottom: 8,
-    fontFamily: 'Nanum_hana',
+    fontFamily: customFonts.nanumSquareRound,
   },
   buttonContainer: {
     position: 'absolute',
@@ -155,24 +157,21 @@ const styles = StyleSheet.create({
     right: 0,
     padding: 20,
     backgroundColor: ivory[100],
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(0,0,0,0.05)',
   },
   startButton: {
-    backgroundColor: green[200],
+    backgroundColor: green[400],
     paddingVertical: 15,
     borderRadius: 10,
     alignItems: 'center',
-    shadowColor: '#000',
+    shadowColor: gray[900],
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 3,
     elevation: 3,
   },
   buttonText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-    fontFamily: 'Nanum_hana',
+    color: gray[100],
+    fontSize: 24,
+    fontFamily: customFonts.nanumHana,
   },
 });

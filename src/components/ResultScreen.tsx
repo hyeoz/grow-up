@@ -7,7 +7,8 @@ import {
   StyleSheet,
   ScrollView,
 } from 'react-native';
-import { green, ivory } from '@/assets/palette';
+import { green, ivory } from '@/styles/palette';
+import { globalTextStyle } from '@/styles/fonts';
 
 interface ResultScreenProps {
   result: {
@@ -75,7 +76,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: green[300],
     marginBottom: 20,
-    fontFamily: 'Nanum_hana',
+    ...globalTextStyle,
   },
   imageContainer: {
     width: '100%',
@@ -109,13 +110,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: green[300],
-    fontFamily: 'Nanum_hana',
+    ...globalTextStyle,
   },
   resultValue: {
     flex: 1,
     fontSize: 16,
     color: '#333',
-    fontFamily: 'Nanum_hana',
+    ...globalTextStyle,
   },
   infoContainer: {
     backgroundColor: 'white',
@@ -133,13 +134,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: green[300],
     marginBottom: 10,
-    fontFamily: 'Nanum_hana',
+    ...globalTextStyle,
   },
   infoText: {
     fontSize: 14,
     color: '#555',
     lineHeight: 20,
-    fontFamily: 'Nanum_hana',
+    ...globalTextStyle,
   },
   button: {
     backgroundColor: green[200],
@@ -152,7 +153,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
-    fontFamily: 'Nanum_hana',
+    ...globalTextStyle,
   },
 });
 

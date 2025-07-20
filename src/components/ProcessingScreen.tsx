@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
-import { green, ivory } from '@/assets/palette';
+import { green, ivory } from '@/styles/palette';
+import { globalTextStyle } from '@/styles/fonts';
 
 interface ProcessingScreenProps {
   imageUri: string;
@@ -83,7 +84,7 @@ const styles = StyleSheet.create({
     color: green[300],
     marginBottom: 30,
     textAlign: 'center',
-    fontFamily: 'Nanum_hana',
+    ...globalTextStyle,
   },
   progressContainer: {
     marginBottom: 30,
@@ -103,7 +104,7 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     color: green[300],
     fontWeight: 'bold',
-    fontFamily: 'Nanum_hana',
+    ...globalTextStyle,
   },
   loadingContainer: {
     alignItems: 'center',
@@ -113,7 +114,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: green[300],
     textAlign: 'center',
-    fontFamily: 'Nanum_hana',
+    ...globalTextStyle,
   },
 });
 
