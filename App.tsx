@@ -26,12 +26,12 @@ function App() {
 
   // State management
   const [currentScreen, setCurrentScreen] = useState<AppScreen>('landing');
-  const [capturedImage, setCapturedImage] = useState<string>('');
+  const [capturedImages, setCapturedImages] = useState<string[]>([]);
   const [analysisResult, setAnalysisResult] = useState<any>(null);
 
-  // Handle captured photo
-  const handleCapture = (imageUri: string) => {
-    setCapturedImage(imageUri);
+  // Handle captured photos
+  const handleCapture = (imageUris: string[]) => {
+    setCapturedImages(imageUris);
     setCurrentScreen('processing');
   };
 
@@ -43,7 +43,7 @@ function App() {
 
   // Handle restart flow
   const handleRestart = () => {
-    setCapturedImage('');
+    setCapturedImages([]);
     setAnalysisResult(null);
     setCurrentScreen('landing');
   };
@@ -90,7 +90,7 @@ function App() {
       case 'processing':
         return (
           <ProcessingScreen
-            imageUri={capturedImage}
+            imageUris={capturedImages}
             onProcessingComplete={handleProcessingComplete}
           />
         );
