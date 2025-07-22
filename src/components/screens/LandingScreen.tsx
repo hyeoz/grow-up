@@ -13,12 +13,7 @@ import { gray, green, ivory } from '@/styles/palette';
 import { customFonts } from '@/styles/fonts';
 
 import LeafScanning from '@/assets/images/leaf_scanning.gif';
-
-interface LandingScreenProps {
-  onGetStarted: () => void;
-}
-
-// TODO 랜딩페이지 한 번만 열리도록 상태관리
+import { LandingScreenProps } from '@/types';
 
 export const LandingScreen: React.FC<LandingScreenProps> = ({
   onGetStarted,

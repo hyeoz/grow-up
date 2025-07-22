@@ -151,8 +151,6 @@ export const CaptureScreen = ({ onCapture }: CaptureScreenProps) => {
     );
   }, [isCameraVisible, device, hasPermission, takePicture, cameraRef]);
 
-  console.log(cameraRef.current, 'CaptureScreen current');
-
   return (
     <View style={styles.container}>
       <Text style={styles.title}>사진 찍기</Text>

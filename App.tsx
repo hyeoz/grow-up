@@ -24,33 +24,27 @@ const FIRST_TIME_KEY = 'app_first_time_open';
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
 
-  // State management
   const [currentScreen, setCurrentScreen] = useState<AppScreen>('landing');
   const [capturedImages, setCapturedImages] = useState<string[]>([]);
   const [analysisResult, setAnalysisResult] = useState<any>(null);
 
-  // Handle captured photos
   const handleCapture = (imageUris: string[]) => {
     setCapturedImages(imageUris);
     setCurrentScreen('processing');
   };
 
-  // Handle processing completion
   const handleProcessingComplete = (result: any) => {
     setAnalysisResult(result);
     setCurrentScreen('result');
   };
 
-  // Handle restart flow
   const handleRestart = () => {
     setCapturedImages([]);
     setAnalysisResult(null);
     setCurrentScreen('landing');
   };
 
-  // Handle get started action
   const handleGetStarted = async () => {
-    // Mark app as opened once the user has seen the landing page
     try {
       await AsyncStorage.setItem(FIRST_TIME_KEY, 'false');
     } catch (error) {
@@ -59,15 +53,12 @@ function App() {
     setCurrentScreen('capture');
   };
 
-  // Check if it's the first time opening the app
   useEffect(() => {
     const checkFirstTimeOpen = async () => {
       try {
         const value = await AsyncStorage.getItem(FIRST_TIME_KEY);
 
-        // If value exists, this is not the first time opening the app
         if (value !== null) {
-          // Skip landing page if it's not the first time
           setCurrentScreen('capture');
         }
       } catch (error) {
@@ -78,7 +69,6 @@ function App() {
     checkFirstTimeOpen();
   }, []);
 
-  // Render the current screen
   const renderScreen = () => {
     switch (currentScreen) {
       case 'landing':
