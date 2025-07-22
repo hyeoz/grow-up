@@ -1,0 +1,465 @@
+import React, { useState, useRef, useEffect } from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  Alert,
+  Dimensions,
+  Modal,
+  StatusBar,
+  Platform,
+} from 'react-native';
+import {
+  Camera,
+  useCameraDevice,
+  useCameraPermission,
+} from 'react-native-vision-camera';
+
+import { RenderCamera } from '@/components/camera';
+import { gray, green, ivory, customFonts } from '@/styles';
+import { CaptureScreenProps } from '@/types';
+import { MAX_IMAGES, IMAGE_SPACING } from '@/utils/constants';
+
+import CameraIcon from '@/assets/images/disabled_camera.png';
+import LeafScanning from '@/assets/images/leaf_scanning.gif';
+
+const WIDTH = Dimensions.get('window').width;
+
+export const CaptureScreen = ({ onCapture }: CaptureScreenProps) => {
+  const [imageUris, setImageUris] = useState<string[]>([]);
+  const [isCameraVisible, setIsCameraVisible] = useState<boolean>(false);
+  const cameraRef = useRef<Camera>(null);
+
+  const { hasPermission, requestPermission } = useCameraPermission();
+  const device = useCameraDevice('back'); // 후방카메라
+
+  // 앱이 시작될 때 카메라 권한 요청
+  useEffect(() => {
+    (async () => {
+      if (!hasPermission) {
+        await requestPermission();
+      }
+    })();
+  }, [hasPermission, requestPermission]);
+
+  // 사진 촬영 처리
+  const handleCapture = () => {
+    if (imageUris.length >= MAX_IMAGES) {
+      Alert.alert(
+        '최대 사진 수',
+        `최대 ${MAX_IMAGES}장까지 촬영할 수 있습니다.`,
+      );
+      return;
+    }
+
+    // 카메라 모달 표시
+    setIsCameraVisible(true);
+  };
+
+  // 실제 사진 촬영
+  const takePicture = async () => {
+    if (cameraRef.current) {
+      try {
+        const photo = await cameraRef.current.takePhoto({
+          flash: 'auto',
+        });
+
+        // 파일 경로 생성 - react-native-vision-camera는 file:// 경로를 반환합니다
+        const photoUri =
+          Platform.OS === 'ios' ? photo.path : `file://${photo.path}`;
+
+        setImageUris([...imageUris, photoUri]);
+        setIsCameraVisible(false);
+      } catch (error) {
+        console.error('카메라 촬영 오류:', error);
+        Alert.alert('오류', '사진 촬영 중 오류가 발생했습니다.');
+      }
+    }
+  };
+
+  // 분석 확인 처리 (카메라 버튼과 동일한 동작)
+  const handleAnalyze = () => {
+    if (imageUris.length > 0) {
+      onCapture(imageUris);
+    } else {
+      Alert.alert('사진 필요', '적어도 한 장의 사진이 필요합니다.');
+    }
+  };
+
+  // 이미지 삭제
+  const handleDeleteImage = (index: number) => {
+    const newImageUris = [...imageUris];
+    newImageUris.splice(index, 1);
+    setImageUris(newImageUris);
+  };
+
+  // 카메라 모달 닫기
+  const closeCamera = () => {
+    setIsCameraVisible(false);
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>사진 찍기</Text>
+
+      <View style={styles.contentWrapper}>
+        {/* 이미지 썸네일 목록 */}
+        <View style={thumbnailStyle.thumbnailContainer}>
+          {/* 스택처럼 쌓인 이미지들 표시 */}
+          {imageUris.length > 0 ? (
+            imageUris.map((uri, index) => {
+              const rotateDeg = index === 1 ? 5 : index === 2 ? -5 : 0;
+              const indexedTop = index === 1 ? -40 : index === 2 ? -60 : -90;
+              const indexedLeft =
+                (index === 1 ? 25 : index === 2 ? -25 : 0) +
+                (WIDTH / 2 - IMAGE_SPACING); // padding 고려
+
+              return (
+                <View
+                  key={`${uri}-${index}`}
+                  style={[
+                    thumbnailStyle.stackedItem,
+                    {
+                      top: indexedTop,
+                      left: indexedLeft,
+                      zIndex: imageUris.length + index,
+                      transform: [
+                        { translateX: '-50%' },
+                        { rotate: `${rotateDeg}deg` },
+                      ],
+                    },
+                  ]}
+                >
+                  <Image
+                    source={{ uri }}
+                    style={thumbnailStyle.thumbnail as any}
+                  />
+                  <TouchableOpacity
+                    style={buttonStyle.deleteButton}
+                    onPress={() => handleDeleteImage(index)}
+                  >
+                    <Text style={buttonStyle.deleteButtonText}>✕</Text>
+                  </TouchableOpacity>
+                </View>
+              );
+            })
+          ) : (
+            // 이미지가 없는 경우
+            <View style={thumbnailStyle.emptyStackItem}>
+              <Image
+                source={CameraIcon}
+                style={thumbnailStyle.emptyStackImage}
+              />
+            </View>
+          )}
+        </View>
+
+        {/* 이미지 추가 버튼 */}
+        {/* 최대 이미지 수를 초과하지 않으면 추가 버튼 표시 */}
+        {imageUris.length < MAX_IMAGES && (
+          <TouchableOpacity
+            style={buttonStyle.addPhotoButton}
+            onPress={handleCapture}
+          >
+            <Text style={buttonStyle.addPhotoText}>사진 추가하기</Text>
+          </TouchableOpacity>
+        )}
+      </View>
+
+      {/* AI 분석 버튼 */}
+      <View style={buttonStyle.buttonContainer}>
+        <TouchableOpacity
+          style={[
+            buttonStyle.captureButton,
+            imageUris.length === 0 && buttonStyle.disabledButton,
+          ]}
+          onPress={handleAnalyze}
+          disabled={imageUris.length === 0}
+        >
+          <Text style={buttonStyle.buttonText}>분석하기</Text>
+        </TouchableOpacity>
+      </View>
+      {/* 카메라 모달 */}
+      <Modal
+        animationType="slide"
+        transparent={false}
+        visible={isCameraVisible}
+        onRequestClose={closeCamera}
+      >
+        <View style={styles.cameraContainer}>
+          <StatusBar barStyle="light-content" backgroundColor={gray[900]} />
+          {device && hasPermission ? (
+            <>
+              <RenderCamera
+                cameraRef={cameraRef}
+                isCameraVisible={isCameraVisible}
+                device={device}
+              />
+              <View style={cameraStyle.takePhotoButtonContainer}>
+                <View style={cameraStyle.takePhotoButton}>
+                  <TouchableOpacity
+                    style={cameraStyle.takePhotoTouchable}
+                    onPress={takePicture}
+                  >
+                    <View style={cameraStyle.takePhotoButtonInner} />
+                  </TouchableOpacity>
+                </View>
+                <TouchableOpacity onPress={closeCamera}>
+                  <Text style={cameraStyle.cameraCloseText}>닫기</Text>
+                </TouchableOpacity>
+              </View>
+            </>
+          ) : (
+            <View style={cameraStyle.noCameraContainer}>
+              <View style={cameraStyle.photoContentContainer}>
+                {!hasPermission ? (
+                  <Text style={cameraStyle.noCameraText}>
+                    {
+                      '카메라 권한이 거부되었습니다. 설정에서 권한을 허용해주세요.'
+                    }
+                  </Text>
+                ) : (
+                  <Image source={LeafScanning} />
+                )}
+              </View>
+              <View style={cameraStyle.takePhotoButtonContainer}>
+                <View style={cameraStyle.takePhotoButton}>
+                  <TouchableOpacity
+                    style={cameraStyle.takePhotoTouchable}
+                    onPress={takePicture}
+                    disabled={true}
+                  >
+                    <View style={cameraStyle.takePhotoButtonInner} />
+                  </TouchableOpacity>
+                </View>
+                <TouchableOpacity onPress={closeCamera}>
+                  <Text style={cameraStyle.cameraCloseText}>닫기</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
+        </View>
+      </Modal>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: ivory[100],
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: green[300],
+    textAlign: 'center',
+    marginBottom: 20,
+    fontFamily: customFonts.nanumHana,
+  },
+  contentWrapper: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 20,
+  },
+  cameraContainer: {
+    flex: 1,
+    backgroundColor: gray[900],
+  },
+  cameraControlsContainer: {
+    position: 'absolute',
+    bottom: 40,
+    left: 0,
+    right: 0,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 10,
+  },
+  cameraCaptureButton: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  captureButtonInner: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: gray[100],
+  },
+});
+
+const thumbnailStyle = StyleSheet.create({
+  thumbnailContainer: {
+    width: '100%',
+    height: 150, // 스택 높이를 명확하게 지정
+    position: 'relative', // 자식 요소의 absolute 포지셔닝을 위함
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  thumbnail: {},
+  stackedItem: {
+    // 스택 효과를 위해 상단에서 겹치도록 배치
+    position: 'absolute',
+    borderColor: 'red',
+    borderWidth: 2,
+    width: 200,
+    height: 200,
+    borderRadius: 10,
+    backgroundColor: gray[100],
+  },
+  emptyStackItem: {
+    width: 200,
+    height: 200,
+    borderRadius: 10,
+    padding: 10,
+    marginTop: -120,
+    borderColor: gray[200],
+    borderWidth: 2,
+    backgroundColor: gray[100],
+    overflow: 'hidden',
+    position: 'relative',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyStackImage: {
+    width: 32,
+    height: 32,
+  },
+});
+
+const buttonStyle = StyleSheet.create({
+  buttonContainer: {
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 20,
+  },
+  captureButton: {
+    width: '100%',
+    backgroundColor: green[400],
+    paddingVertical: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    shadowColor: gray[900],
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 3,
+  },
+  disabledButton: {
+    opacity: 0.5,
+  },
+  confirmButton: {
+    backgroundColor: green[500],
+  },
+  buttonText: {
+    color: gray[100],
+    fontSize: 24,
+    fontFamily: customFonts.nanumHana,
+  },
+  deleteButton: {
+    position: 'absolute',
+    top: 5,
+    right: 5,
+    borderRadius: 50,
+    width: 20,
+    height: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  deleteButtonText: {
+    color: gray[900],
+    fontSize: 16,
+    fontWeight: 'bold',
+    fontFamily: customFonts.nanumHana,
+  },
+  addPhotoButton: {
+    borderRadius: 20,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderColor: gray[100],
+    borderWidth: 1,
+    backgroundColor: gray[100],
+    shadowColor: gray[900],
+    shadowOffset: { width: 2, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
+    marginBottom: 50,
+  },
+  addPhotoText: {
+    fontSize: 20,
+    color: gray[500],
+    fontFamily: customFonts.nanumHana,
+  },
+});
+
+const cameraStyle = StyleSheet.create({
+  takePhotoButtonContainer: {
+    backgroundColor: gray[100],
+    width: '100%',
+    height: 100,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    position: 'relative',
+  },
+  takePhotoButton: {
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  takePhotoTouchable: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: gray[500],
+    position: 'relative',
+  },
+  takePhotoButtonInner: {
+    width: 35,
+    height: 35,
+    borderRadius: 17.5, // 50% 대신 반지름의 절반 값 사용
+    backgroundColor: gray[100],
+    position: 'absolute',
+    top: 7.5,
+    right: 7.5,
+  },
+  photoContentContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noCameraContainer: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noCameraText: {
+    marginBottom: 20,
+    paddingHorizontal: 20,
+    color: gray[100],
+    fontSize: 22,
+    textAlign: 'center',
+    fontFamily: customFonts.nanumSquareRound,
+  },
+  cameraCloseText: {
+    color: gray[900],
+    fontSize: 20,
+    fontWeight: 'bold',
+    fontFamily: customFonts.nanumSquareRound,
+    width: 40,
+    position: 'absolute',
+    right: 20,
+    transform: [{ translateY: '-50%' }],
+  },
+});

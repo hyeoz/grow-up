@@ -9,9 +9,10 @@ import {
   SafeAreaView,
 } from 'react-native';
 
-import LeafScanning from '@/assets/images/leaf_scanning.gif';
 import { gray, green, ivory } from '@/styles/palette';
 import { customFonts } from '@/styles/fonts';
+
+import LeafScanning from '@/assets/images/leaf_scanning.gif';
 
 interface LandingScreenProps {
   onGetStarted: () => void;

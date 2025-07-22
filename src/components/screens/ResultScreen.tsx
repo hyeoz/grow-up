@@ -8,7 +8,7 @@ import {
   ScrollView,
 } from 'react-native';
 import { green, ivory } from '@/styles/palette';
-import { globalTextStyle } from '@/styles/fonts';
+import { customFonts } from '@/styles';
 
 interface ResultScreenProps {
   result: {
@@ -22,7 +22,10 @@ interface ResultScreenProps {
   onRestart: () => void;
 }
 
-const ResultScreen: React.FC<ResultScreenProps> = ({ result, onRestart }) => {
+export const ResultScreen: React.FC<ResultScreenProps> = ({
+  result,
+  onRestart,
+}) => {
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.title}>분석 결과</Text>
@@ -76,7 +79,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: green[300],
     marginBottom: 20,
-    ...globalTextStyle,
+    fontFamily: customFonts.nanumHana,
   },
   imageContainer: {
     width: '100%',
@@ -110,13 +113,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: green[300],
-    ...globalTextStyle,
+    fontFamily: customFonts.nanumHana,
   },
   resultValue: {
     flex: 1,
     fontSize: 16,
     color: '#333',
-    ...globalTextStyle,
+    fontFamily: customFonts.nanumSquareRound,
   },
   infoContainer: {
     backgroundColor: 'white',
@@ -134,13 +137,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: green[300],
     marginBottom: 10,
-    ...globalTextStyle,
+    fontFamily: customFonts.nanumHana,
   },
   infoText: {
     fontSize: 14,
     color: '#555',
     lineHeight: 20,
-    ...globalTextStyle,
+    fontFamily: customFonts.nanumSquareRound,
   },
   button: {
     backgroundColor: green[200],
@@ -153,8 +156,6 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
-    ...globalTextStyle,
+    fontFamily: customFonts.nanumHana,
   },
 });
-
-export default ResultScreen;

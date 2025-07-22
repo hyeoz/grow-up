@@ -8,7 +8,7 @@ interface ProcessingScreenProps {
   onProcessingComplete: (result: any) => void;
 }
 
-const ProcessingScreen: React.FC<ProcessingScreenProps> = ({
+export const ProcessingScreen: React.FC<ProcessingScreenProps> = ({
   imageUris,
   onProcessingComplete,
 }) => {
@@ -24,7 +24,7 @@ const ProcessingScreen: React.FC<ProcessingScreenProps> = ({
 
     // 현재 이미지 처리 시작
     setProgress(0);
-    
+
     // 이미지 처리 시뮬레이션
     const interval = setInterval(() => {
       setProgress(prev => {
@@ -32,7 +32,7 @@ const ProcessingScreen: React.FC<ProcessingScreenProps> = ({
 
         if (newProgress >= 100) {
           clearInterval(interval);
-          
+
           // 현재 이미지에 대한 분석 결과 생성
           const currentImageUri = imageUris[currentImageIndex];
           const mockResult = {
@@ -40,14 +40,18 @@ const ProcessingScreen: React.FC<ProcessingScreenProps> = ({
             analysis: {
               growthStage: `성장 단계 ${currentImageIndex + 1}`,
               health: ['양호', '좋음', '주의 필요'][currentImageIndex % 3],
-              recommendation: ['물을 더 주세요', '햇빛이 더 필요해요', '영양분을 추가하세요'][currentImageIndex % 3],
+              recommendation: [
+                '물을 더 주세요',
+                '햇빛이 더 필요해요',
+                '영양분을 추가하세요',
+              ][currentImageIndex % 3],
             },
           };
-          
+
           // 처리된 이미지 결과를 배열에 추가
           const newProcessedImages = [...processedImages, mockResult];
           setProcessedImages(newProcessedImages);
-          
+
           // 모든 이미지가 처리되었는지 확인
           if (currentImageIndex + 1 >= imageUris.length) {
             // 모든 이미지 처리 완료 - 결과 반환
@@ -65,21 +69,21 @@ const ProcessingScreen: React.FC<ProcessingScreenProps> = ({
               setCurrentImageIndex(currentImageIndex + 1);
             }, 300);
           }
-          
+
           return 100;
         }
-        
+
         return newProgress;
       });
     }, 200);
-    
+
     return () => clearInterval(interval);
   }, [imageUris, currentImageIndex, processedImages, onProcessingComplete]);
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>이미지 분석 중...</Text>
-      
+
       <Text style={styles.subtitle}>
         이미지 {currentImageIndex + 1} / {imageUris.length} 처리 중
       </Text>
@@ -100,7 +104,7 @@ const ProcessingScreen: React.FC<ProcessingScreenProps> = ({
           {progress >= 90 && '분석 결과를 생성하는 중...'}
         </Text>
       </View>
-      
+
       <View style={styles.statusContainer}>
         {processedImages.map((img, idx) => (
           <View key={idx} style={styles.statusItem}>
@@ -176,5 +180,3 @@ const styles = StyleSheet.create({
     fontFamily: customFonts.nanumSquareRound,
   },
 });
-
-export default ProcessingScreen;

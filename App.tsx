@@ -7,13 +7,13 @@ import {
   SafeAreaView,
 } from 'react-native';
 
-// Import our screen components
-import { ivory } from '@/styles/palette';
-import { customFonts } from '@/styles/fonts';
-import { LandingScreen } from '@/components/LandingScreen';
-import CaptureScreen from '@/components/CaptureScreen';
-import ProcessingScreen from '@/components/ProcessingScreen';
-import ResultScreen from '@/components/ResultScreen';
+import {
+  LandingScreen,
+  CaptureScreen,
+  ProcessingScreen,
+  ResultScreen,
+} from '@/components/screens';
+import { customFonts, ivory } from '@/styles';
 
 // Define the app's screen states
 type AppScreen = 'landing' | 'capture' | 'processing' | 'result';
@@ -64,7 +64,7 @@ function App() {
     const checkFirstTimeOpen = async () => {
       try {
         const value = await AsyncStorage.getItem(FIRST_TIME_KEY);
-        
+
         // If value exists, this is not the first time opening the app
         if (value !== null) {
           // Skip landing page if it's not the first time
@@ -74,7 +74,7 @@ function App() {
         console.error('Error checking first time status:', error);
       }
     };
-    
+
     checkFirstTimeOpen();
   }, []);
 
