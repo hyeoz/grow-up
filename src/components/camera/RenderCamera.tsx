@@ -19,10 +19,9 @@ export const RenderCamera = forwardRef<Camera, RenderCameraProps>(
     // 컴포넌트 마운트 이후에 ref 상태 확인
     useEffect(() => {
       if (localRef.current) {
-        console.log('Camera local ref is available:', localRef.current);
         setIsReady(true);
       } else {
-        console.log('Camera local ref is null');
+        console.error('Camera local ref is null');
       }
     }, [localRef]);
 
