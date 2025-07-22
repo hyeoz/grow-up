@@ -29,7 +29,6 @@ export const RenderCamera = forwardRef<Camera, RenderCameraProps>(
     useImperativeHandle(
       ref,
       () => {
-        console.log('Exposing camera ref:', localRef.current);
         // Camera 인스턴스의 모든 메서드를 부모에게 노출
         return localRef.current as Camera;
       },

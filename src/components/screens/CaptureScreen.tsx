@@ -21,6 +21,7 @@ import {
   useCameraDevice,
   useCameraPermission,
 } from 'react-native-vision-camera';
+import RNFS from 'react-native-fs';
 
 import { RenderCamera } from '@/components/camera';
 import { MAX_IMAGES, IMAGE_SPACING } from '@/utils/constants';
@@ -61,9 +62,9 @@ export const CaptureScreen = ({ onCapture }: CaptureScreenProps) => {
 
     // 카메라 모달 표시
     setIsCameraVisible(true);
-    // test
+    // NOTE test
     // const photoUri =
-    //   'https://thumb.photo-ac.com/cc/cc4715a4055eb39eff0e7e0c189e3f9c_t.jpeg';
+    //   'https://i.namu.wiki/i/-20QSrwYh8dN7C18GHjJlf9hem1qOsxA5Ea-4qCPSjTaSnd4Oq0UpuMU7Nk6kg2wVRvQHuROn6-c68EMKuwO2mc8R0_yil2jg5hTi9bPZxQtHM26ofk60t7aIPeCUf0Yhh4VzUM5Yk1EC5kZdEHyXw.webp';
     // setImageUris([...imageUris, photoUri]);
   };
 
@@ -75,11 +76,22 @@ export const CaptureScreen = ({ onCapture }: CaptureScreenProps) => {
           flash: 'auto',
         });
 
-        // 파일 경로 생성 - react-native-vision-camera는 file:// 경로를 반환합니다
-        const photoUri =
-          Platform.OS === 'ios' ? photo.path : `file://${photo.path}`;
+        // 파일 경로 생성
+        // const photoUri =
+        //   Platform.OS === 'ios' ? photo.path : `file://${photo.path}`;
 
-        setImageUris([...imageUris, photoUri]);
+        // 파일을 base64로 변환
+        const base64Image = await RNFS.readFile(
+          Platform.OS === 'ios' ? photo.path : `file://${photo.path}`,
+          'base64',
+        );
+
+        // 'data:image/jpeg;base64,' prefix 추가 (웹 표준 형식)
+        const base64ImageUri = `data:image/jpeg;base64,${base64Image}`;
+
+        // base64 형식의 이미지 저장 (URI 대신)
+        setImageUris([...imageUris, base64ImageUri]);
+
         setIsCameraVisible(false);
       } catch (error) {
         console.error('카메라 촬영 오류:', error);
