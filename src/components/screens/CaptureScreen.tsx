@@ -61,6 +61,10 @@ export const CaptureScreen = ({ onCapture }: CaptureScreenProps) => {
 
     // 카메라 모달 표시
     setIsCameraVisible(true);
+    // test
+    // const photoUri =
+    //   'https://thumb.photo-ac.com/cc/cc4715a4055eb39eff0e7e0c189e3f9c_t.jpeg';
+    // setImageUris([...imageUris, photoUri]);
   };
 
   // 실제 사진 촬영
@@ -298,7 +302,10 @@ const thumbnailStyle = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  thumbnail: {},
+  thumbnail: {
+    width: '100%',
+    height: '100%',
+  },
   stackedItem: {
     // 스택 효과를 위해 상단에서 겹치도록 배치
     position: 'absolute',
