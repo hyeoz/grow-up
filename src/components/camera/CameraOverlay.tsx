@@ -43,7 +43,8 @@ export const CameraOverlay = () => {
 const overlayStyle = StyleSheet.create({
   container: {
     position: 'absolute',
-    top: 0,
+    top: '50%',
+    transform: [{ translateY: '-50%' }],
     left: 0,
     right: 0,
     bottom: 100, // 하단 버튼 영역 고려

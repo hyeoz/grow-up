@@ -1,4 +1,4 @@
-import { Camera, CameraDevice } from 'react-native-vision-camera';
+import { CameraDevice } from 'react-native-vision-camera';
 
 export type CaptureScreenProps = {
   onCapture: (imageUris: string[]) => void;
@@ -7,5 +7,4 @@ export type CaptureScreenProps = {
 export type RenderCameraProps = {
   isCameraVisible: boolean;
   device: CameraDevice;
-  cameraRef: React.RefObject<Camera | null>;
 };

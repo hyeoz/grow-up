@@ -1,4 +1,10 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  useMemo,
+  useCallback,
+} from 'react';
 import {
   View,
   Text,
@@ -7,7 +13,6 @@ import {
   StyleSheet,
   Alert,
   Dimensions,
-  Modal,
   StatusBar,
   Platform,
 } from 'react-native';
@@ -18,9 +23,9 @@ import {
 } from 'react-native-vision-camera';
 
 import { RenderCamera } from '@/components/camera';
+import { MAX_IMAGES, IMAGE_SPACING } from '@/utils/constants';
 import { gray, green, ivory, customFonts } from '@/styles';
 import { CaptureScreenProps } from '@/types';
-import { MAX_IMAGES, IMAGE_SPACING } from '@/utils/constants';
 
 import CameraIcon from '@/assets/images/disabled_camera.png';
 import LeafScanning from '@/assets/images/leaf_scanning.gif';
@@ -59,7 +64,7 @@ export const CaptureScreen = ({ onCapture }: CaptureScreenProps) => {
   };
 
   // 실제 사진 촬영
-  const takePicture = async () => {
+  const takePicture = useCallback(async () => {
     if (cameraRef.current) {
       try {
         const photo = await cameraRef.current.takePhoto({
@@ -77,7 +82,7 @@ export const CaptureScreen = ({ onCapture }: CaptureScreenProps) => {
         Alert.alert('오류', '사진 촬영 중 오류가 발생했습니다.');
       }
     }
-  };
+  }, [cameraRef, imageUris]);
 
   // 분석 확인 처리 (카메라 버튼과 동일한 동작)
   const handleAnalyze = () => {
@@ -100,6 +105,54 @@ export const CaptureScreen = ({ onCapture }: CaptureScreenProps) => {
     setIsCameraVisible(false);
   };
 
+  const renderCameraSection = useMemo(() => {
+    if (!isCameraVisible) return null;
+
+    return (
+      <View style={cameraStyle.modalOverlay}>
+        <View style={cameraStyle.modalContainer}>
+          <StatusBar barStyle="light-content" backgroundColor={gray[900]} />
+          {device && hasPermission ? (
+            <RenderCamera
+              isCameraVisible={isCameraVisible}
+              device={device}
+              ref={cameraRef}
+            />
+          ) : (
+            <View style={cameraStyle.noCameraContainer}>
+              <View style={cameraStyle.photoContentContainer}>
+                {!hasPermission ? (
+                  <Text style={cameraStyle.noCameraText}>
+                    {
+                      '카메라 권한이 거부되었습니다. 설정에서 권한을 허용해주세요.'
+                    }
+                  </Text>
+                ) : (
+                  <Image source={LeafScanning} />
+                )}
+              </View>
+            </View>
+          )}
+          <View style={cameraStyle.takePhotoButtonContainer}>
+            <View style={cameraStyle.takePhotoButton}>
+              <TouchableOpacity
+                style={cameraStyle.takePhotoTouchable}
+                onPress={takePicture}
+              >
+                <View style={cameraStyle.takePhotoButtonInner} />
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity onPress={closeCamera}>
+              <Text style={cameraStyle.cameraCloseText}>닫기</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    );
+  }, [isCameraVisible, device, hasPermission, takePicture, cameraRef]);
+
+  console.log(cameraRef.current, 'CaptureScreen current');
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>사진 찍기</Text>
@@ -111,7 +164,8 @@ export const CaptureScreen = ({ onCapture }: CaptureScreenProps) => {
           {imageUris.length > 0 ? (
             imageUris.map((uri, index) => {
               const rotateDeg = index === 1 ? 5 : index === 2 ? -5 : 0;
-              const indexedTop = index === 1 ? -40 : index === 2 ? -60 : -90;
+              const indexedTop =
+                index === 1 ? '56%' : index === 2 ? '60%' : '50%';
               const indexedLeft =
                 (index === 1 ? 25 : index === 2 ? -25 : 0) +
                 (WIDTH / 2 - IMAGE_SPACING); // padding 고려
@@ -127,6 +181,7 @@ export const CaptureScreen = ({ onCapture }: CaptureScreenProps) => {
                       zIndex: imageUris.length + index,
                       transform: [
                         { translateX: '-50%' },
+                        { translateY: '-50%' },
                         { rotate: `${rotateDeg}deg` },
                       ],
                     },
@@ -155,7 +210,6 @@ export const CaptureScreen = ({ onCapture }: CaptureScreenProps) => {
             </View>
           )}
         </View>
-
         {/* 이미지 추가 버튼 */}
         {/* 최대 이미지 수를 초과하지 않으면 추가 버튼 표시 */}
         {imageUris.length < MAX_IMAGES && (
@@ -181,67 +235,9 @@ export const CaptureScreen = ({ onCapture }: CaptureScreenProps) => {
           <Text style={buttonStyle.buttonText}>분석하기</Text>
         </TouchableOpacity>
       </View>
+
       {/* 카메라 모달 */}
-      <Modal
-        animationType="slide"
-        transparent={false}
-        visible={isCameraVisible}
-        onRequestClose={closeCamera}
-      >
-        <View style={styles.cameraContainer}>
-          <StatusBar barStyle="light-content" backgroundColor={gray[900]} />
-          {device && hasPermission ? (
-            <>
-              <RenderCamera
-                cameraRef={cameraRef}
-                isCameraVisible={isCameraVisible}
-                device={device}
-              />
-              <View style={cameraStyle.takePhotoButtonContainer}>
-                <View style={cameraStyle.takePhotoButton}>
-                  <TouchableOpacity
-                    style={cameraStyle.takePhotoTouchable}
-                    onPress={takePicture}
-                  >
-                    <View style={cameraStyle.takePhotoButtonInner} />
-                  </TouchableOpacity>
-                </View>
-                <TouchableOpacity onPress={closeCamera}>
-                  <Text style={cameraStyle.cameraCloseText}>닫기</Text>
-                </TouchableOpacity>
-              </View>
-            </>
-          ) : (
-            <View style={cameraStyle.noCameraContainer}>
-              <View style={cameraStyle.photoContentContainer}>
-                {!hasPermission ? (
-                  <Text style={cameraStyle.noCameraText}>
-                    {
-                      '카메라 권한이 거부되었습니다. 설정에서 권한을 허용해주세요.'
-                    }
-                  </Text>
-                ) : (
-                  <Image source={LeafScanning} />
-                )}
-              </View>
-              <View style={cameraStyle.takePhotoButtonContainer}>
-                <View style={cameraStyle.takePhotoButton}>
-                  <TouchableOpacity
-                    style={cameraStyle.takePhotoTouchable}
-                    onPress={takePicture}
-                    disabled={true}
-                  >
-                    <View style={cameraStyle.takePhotoButtonInner} />
-                  </TouchableOpacity>
-                </View>
-                <TouchableOpacity onPress={closeCamera}>
-                  <Text style={cameraStyle.cameraCloseText}>닫기</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          )}
-        </View>
-      </Modal>
+      {renderCameraSection}
     </View>
   );
 };
@@ -264,7 +260,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    gap: 20,
   },
   cameraContainer: {
     flex: 1,
@@ -298,8 +293,9 @@ const styles = StyleSheet.create({
 
 const thumbnailStyle = StyleSheet.create({
   thumbnailContainer: {
+    flex: 1,
     width: '100%',
-    height: 150, // 스택 높이를 명확하게 지정
+
     position: 'relative', // 자식 요소의 absolute 포지셔닝을 위함
     justifyContent: 'center',
     alignItems: 'center',
@@ -308,7 +304,7 @@ const thumbnailStyle = StyleSheet.create({
   stackedItem: {
     // 스택 효과를 위해 상단에서 겹치도록 배치
     position: 'absolute',
-    borderColor: 'red',
+    borderColor: gray[200],
     borderWidth: 2,
     width: 200,
     height: 200,
@@ -320,7 +316,6 @@ const thumbnailStyle = StyleSheet.create({
     height: 200,
     borderRadius: 10,
     padding: 10,
-    marginTop: -120,
     borderColor: gray[200],
     borderWidth: 2,
     backgroundColor: gray[100],
@@ -369,11 +364,12 @@ const buttonStyle = StyleSheet.create({
     position: 'absolute',
     top: 5,
     right: 5,
-    borderRadius: 50,
+    borderRadius: 5,
     width: 20,
     height: 20,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: gray[300],
   },
   deleteButtonText: {
     color: gray[900],
@@ -393,7 +389,7 @@ const buttonStyle = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 3,
     elevation: 3,
-    marginBottom: 50,
+    transform: [{ translateY: -128 }],
   },
   addPhotoText: {
     fontSize: 20,
@@ -403,6 +399,22 @@ const buttonStyle = StyleSheet.create({
 });
 
 const cameraStyle = StyleSheet.create({
+  modalOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'black',
+    zIndex: 1000,
+    elevation: 5,
+    width: WIDTH,
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: 'black',
+    width: '100%',
+  },
   takePhotoButtonContainer: {
     backgroundColor: gray[100],
     width: '100%',

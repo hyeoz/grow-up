@@ -5,9 +5,11 @@
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios --simulator 'iPhone 16 Pro'",
+    "device": "react-native run-ios --device",
     "lint": "eslint .",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "build:ios": "react-native bundle --entry-file='index.js' --bundle-output='./ios/main.jsbundle' --dev=false --platform='ios'"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^2.2.0",
