@@ -1,0 +1,13 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "src/assets/fonts/NanumHana.ttf",
+      "sha1": "b7fafa497da38894c54e834085a4222eb9137c78"
+    },
+    {
+      "path": "src/assets/fonts/NanumSquareRoundOTFL.otf",
+      "sha1": "22d8cc00904d115e1ef898470a08605505d648b7"
+    }
+  ]
+}
