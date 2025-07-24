@@ -2,23 +2,17 @@ import React from 'react';
 import {
   View,
   Text,
-  Image,
+  // Image,
   TouchableOpacity,
   StyleSheet,
   ScrollView,
 } from 'react-native';
+
 import { green, ivory } from '@/styles/palette';
 import { customFonts } from '@/styles';
 
 interface ResultScreenProps {
-  result: {
-    imageUri: string;
-    analysis: {
-      growthStage: string;
-      health: string;
-      recommendation: string;
-    };
-  };
+  result: any;
   onRestart: () => void;
 }
 
@@ -30,7 +24,7 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
     <ScrollView style={styles.container}>
       <Text style={styles.title}>분석 결과</Text>
 
-      <View style={styles.imageContainer}>
+      {/* <View style={styles.imageContainer}>
         <Image source={{ uri: result.imageUri }} style={styles.image} />
       </View>
 
@@ -51,7 +45,8 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
             {result.analysis.recommendation}
           </Text>
         </View>
-      </View>
+      </View> */}
+      <Text>{JSON.stringify(result)}</Text>
 
       <View style={styles.infoContainer}>
         <Text style={styles.infoTitle}>추가 정보</Text>
@@ -154,7 +149,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: 'white',
-    fontSize: 16,
+    fontSize: 24,
     fontWeight: 'bold',
     fontFamily: customFonts.nanumHana,
   },

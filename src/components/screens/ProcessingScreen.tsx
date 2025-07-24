@@ -3,8 +3,16 @@ import { View, Text, StyleSheet, Image } from 'react-native';
 
 import { green, ivory, customFonts } from '@/styles';
 import { ProcessingScreenProps, ResultResponseType } from '@/types';
+import { GoogleGenAI } from '@google/genai';
+import { REACT_APP_GEMINI_API_KEY } from '@env';
 
 import leaf from '@/assets/images/leaf_scanning.gif';
+
+const ai = new GoogleGenAI({
+  vertexai: false,
+  apiKey: REACT_APP_GEMINI_API_KEY,
+  apiVersion: 'v1beta',
+});
 
 export const ProcessingScreen: React.FC<ProcessingScreenProps> = ({
   imageUris,
@@ -44,32 +52,45 @@ export const ProcessingScreen: React.FC<ProcessingScreenProps> = ({
     }
   `;
 
-  const reqBody = useMemo(() => {
+  const contents = useMemo(() => {
     const initDatas = imageUris.map(uri => {
       return {
         inlineData: {
-          data: uri.replace(/^data:image\/\w+;base64,/, ''),
-          mimeType: 'image/webp',
+          data: uri,
+          mimeType: 'image/jpg',
         },
       };
     });
-    return {
-      role: 'user' as const,
-      parts: [...initDatas, { text: prompts }],
-    };
+    return [...initDatas, { text: prompts }];
   }, [imageUris, prompts]);
+
+  /*
+    const contents = [
+      {
+        inlineData: {
+          mimeType: "image/jpeg",
+          data: base64ImageFile,
+        },
+      },
+      { text: "Caption this image." },
+    ];
+  */
 
   const callGemini = async () => {
     try {
       // TODO
-      // const response = await ai.models.generateContent({
-      //   model: 'gemini-2.0-flash',
-      //   contents: reqBody,
-      //   // contents: '오늘 서울의 날씨를 알려줘', // test
-      // });
-      // console.log(response);
+      const response = await ai.models.generateContent({
+        model: 'gemini-2.0-flash',
+        contents,
+      });
+      console.log(response);
+      setLoading(false);
+      const currentResult = response.text;
+      if (currentResult) {
+        setResult(JSON.parse(currentResult));
+      }
     } catch (error) {
-      console.log({ error });
+      console.error({ error });
     }
   };
 

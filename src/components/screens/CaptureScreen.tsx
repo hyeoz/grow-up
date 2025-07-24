@@ -16,6 +16,7 @@ import {
   StatusBar,
   Platform,
   SafeAreaView,
+  ActionSheetIOS,
 } from 'react-native';
 import {
   Camera,
@@ -23,6 +24,7 @@ import {
   useCameraPermission,
 } from 'react-native-vision-camera';
 import RNFS from 'react-native-fs';
+import { launchImageLibrary } from 'react-native-image-picker';
 
 import { RenderCamera } from '@/components/camera';
 import { MAX_IMAGES, IMAGE_SPACING } from '@/utils/constants';
@@ -61,26 +63,61 @@ export const CaptureScreen = ({ onCapture }: CaptureScreenProps) => {
       return;
     }
 
-    // 카메라 모달 표시
-    // setIsCameraVisible(true);
-    // NOTE test
-    const response = await fetch(
-      'https://i.namu.wiki/i/-20QSrwYh8dN7C18GHjJlf9hem1qOsxA5Ea-4qCPSjTaSnd4Oq0UpuMU7Nk6kg2wVRvQHuROn6-c68EMKuwO2mc8R0_yil2jg5hTi9bPZxQtHM26ofk60t7aIPeCUf0Yhh4VzUM5Yk1EC5kZdEHyXw.webp',
-    );
-    const blob = await response.blob();
-
-    const photoUri = (await new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(blob);
-      reader.onloadend = () => {
-        resolve(reader.result as string); // 여기서 result는 "data:image/webp;base64,..."
-      };
-      reader.onerror = reject;
-    })) as string;
-
-    setImageUris([...imageUris, photoUri]);
-    //
+    // 옵션 표시 (카메라 또는 앨범)
+    if (Platform.OS === 'ios') {
+      ActionSheetIOS.showActionSheetWithOptions(
+        {
+          options: ['취소', '카메라로 촬영하기', '앨범에서 선택하기'],
+          cancelButtonIndex: 0,
+        },
+        buttonIndex => {
+          if (buttonIndex === 1) {
+            // 카메라 선택
+            setIsCameraVisible(true);
+          } else if (buttonIndex === 2) {
+            // 앨범 선택
+            openImagePicker();
+          }
+        },
+      );
+    } else {
+      // Android의 경우 Alert 사용
+      Alert.alert(
+        '사진 추가',
+        '어떻게 사진을 추가하시겠습니까?',
+        [
+          { text: '취소', style: 'cancel' },
+          {
+            text: '카메라',
+            onPress: () => setIsCameraVisible(true),
+          },
+          { text: '앨범', onPress: () => openImagePicker() },
+        ],
+        { cancelable: true },
+      );
+    }
   };
+
+  // 앨범에서 이미지 선택
+  const openImagePicker = useCallback(async () => {
+    try {
+      const result = await launchImageLibrary({
+        mediaType: 'photo',
+        quality: 0.8,
+        includeBase64: true,
+      });
+
+      if (result.assets && result.assets[0] && result.assets[0].base64) {
+        // 선택된 이미지 저장
+        const mimeType = result.assets[0].type || 'image/jpeg';
+        const base64ImageUri = `data:${mimeType};base64,${result.assets[0].base64}`;
+        setImageUris([...imageUris, base64ImageUri]);
+      }
+    } catch (error) {
+      console.error('앨범 선택 오류:', error);
+      Alert.alert('오류', '이미지 선택 중 오류가 발생했습니다.');
+    }
+  }, [imageUris]);
 
   // 실제 사진 촬영
   const takePicture = useCallback(async () => {
@@ -101,7 +138,7 @@ export const CaptureScreen = ({ onCapture }: CaptureScreenProps) => {
         );
 
         // 'data:image/jpeg;base64,' prefix 추가 (웹 표준 형식)
-        const base64ImageUri = `data:image/jpeg;base64,${base64Image}`;
+        const base64ImageUri = `data:image/jpg;base64,${base64Image}`;
 
         // base64 형식의 이미지 저장 (URI 대신)
         setImageUris([...imageUris, base64ImageUri]);

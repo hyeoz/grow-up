@@ -12,6 +12,7 @@
     "build:ios": "react-native bundle --entry-file='index.js' --bundle-output='./ios/main.jsbundle' --dev=false --platform='ios'"
   },
   "dependencies": {
+    "@google/genai": "^1.11.0",
     "@react-native-async-storage/async-storage": "^2.2.0",
     "@react-native/new-app-screen": "0.80.1",
     "@types/react-native-dotenv": "^0.2.2",
@@ -20,6 +21,7 @@
     "react-native": "0.80.1",
     "react-native-dotenv": "^3.4.11",
     "react-native-fs": "^2.20.0",
+    "react-native-image-picker": "^8.2.1",
     "react-native-vision-camera": "^4.7.1"
   },
   "devDependencies": {
