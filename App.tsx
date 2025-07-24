@@ -14,6 +14,7 @@ import {
   ResultScreen,
 } from '@/components/screens';
 import { customFonts, ivory } from '@/styles';
+import { ResultResponseType } from '@/types';
 
 // Define the app's screen states
 type AppScreen = 'landing' | 'capture' | 'processing' | 'result';
@@ -33,8 +34,7 @@ function App() {
     setCurrentScreen('processing');
   };
 
-  // TODO type
-  const handleProcessingComplete = (result: any) => {
+  const handleProcessingComplete = (result: ResultResponseType) => {
     setAnalysisResult(result);
     setCurrentScreen('result');
   };
@@ -81,12 +81,16 @@ function App() {
           <ProcessingScreen
             imageUris={capturedImages}
             onProcessingComplete={handleProcessingComplete}
+            setCurrentScreen={setCurrentScreen}
           />
         );
 
       case 'result':
         return (
-          <ResultScreen result={analysisResult} onRestart={handleRestart} />
+          <ResultScreen
+            analysisResult={analysisResult}
+            onRestart={handleRestart}
+          />
         );
 
       default:

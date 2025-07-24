@@ -27,7 +27,7 @@ import RNFS from 'react-native-fs';
 import { launchImageLibrary } from 'react-native-image-picker';
 
 import { RenderCamera } from '@/components/camera';
-import { MAX_IMAGES, IMAGE_SPACING } from '@/utils/constants';
+import { MAX_IMAGES } from '@/utils/constants';
 import { gray, green, ivory, customFonts } from '@/styles';
 import { CaptureScreenProps } from '@/types';
 
@@ -220,7 +220,7 @@ export const CaptureScreen = ({ onCapture }: CaptureScreenProps) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>사진 찍기</Text>
+      <Text style={styles.title}>사진 추가하기</Text>
 
       <View style={styles.contentWrapper}>
         {/* 이미지 썸네일 목록 */}
@@ -281,7 +281,7 @@ export const CaptureScreen = ({ onCapture }: CaptureScreenProps) => {
             style={buttonStyle.addPhotoButton}
             onPress={handleCapture}
           >
-            <Text style={buttonStyle.addPhotoText}>사진 추가하기</Text>
+            <Text style={buttonStyle.addPhotoText}>추가하기</Text>
           </TouchableOpacity>
         )}
       </View>

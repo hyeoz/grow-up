@@ -10,14 +10,10 @@ import {
 
 import { green, ivory } from '@/styles/palette';
 import { customFonts } from '@/styles';
-
-interface ResultScreenProps {
-  result: any;
-  onRestart: () => void;
-}
+import { ResultScreenProps } from '@/types';
 
 export const ResultScreen: React.FC<ResultScreenProps> = ({
-  result,
+  analysisResult,
   onRestart,
 }) => {
   return (
@@ -46,7 +42,7 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
           </Text>
         </View>
       </View> */}
-      <Text>{JSON.stringify(result)}</Text>
+      <Text>{JSON.stringify(analysisResult)}</Text>
 
       <View style={styles.infoContainer}>
         <Text style={styles.infoTitle}>추가 정보</Text>

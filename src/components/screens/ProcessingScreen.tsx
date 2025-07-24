@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet, Image, Alert } from 'react-native';
 
 import { green, ivory, customFonts } from '@/styles';
 import { ProcessingScreenProps, ResultResponseType } from '@/types';
@@ -7,6 +7,7 @@ import { GoogleGenAI } from '@google/genai';
 import { REACT_APP_GEMINI_API_KEY } from '@env';
 
 import leaf from '@/assets/images/leaf_scanning.gif';
+import useGemini from '@/hooks/gemini';
 
 const ai = new GoogleGenAI({
   vertexai: false,
@@ -17,6 +18,7 @@ const ai = new GoogleGenAI({
 export const ProcessingScreen: React.FC<ProcessingScreenProps> = ({
   imageUris,
   onProcessingComplete,
+  setCurrentScreen,
 }) => {
   const [loading, setLoading] = React.useState(true);
   const [result, setResult] = React.useState<ResultResponseType | null>(null);
@@ -56,7 +58,7 @@ export const ProcessingScreen: React.FC<ProcessingScreenProps> = ({
     const initDatas = imageUris.map(uri => {
       return {
         inlineData: {
-          data: uri,
+          data: uri.replace(/^data:image\/\w+;base64,/, ''),
           mimeType: 'image/jpg',
         },
       };
@@ -78,19 +80,21 @@ export const ProcessingScreen: React.FC<ProcessingScreenProps> = ({
 
   const callGemini = async () => {
     try {
-      // TODO
-      const response = await ai.models.generateContent({
-        model: 'gemini-2.0-flash',
-        contents,
-      });
-      console.log(response);
+      const response = await useGemini({ reqBody: contents });
       setLoading(false);
-      const currentResult = response.text;
+      const currentResult = response;
       if (currentResult) {
-        setResult(JSON.parse(currentResult));
+        setResult(currentResult);
       }
     } catch (error) {
-      console.error({ error });
+      const alert = Alert.alert('Error!', '분석 중 오류가 발생했습니다.', [
+        {
+          text: '돌아가기',
+          onPress: () => {
+            setCurrentScreen('capture');
+          },
+        },
+      ]);
     }
   };
 
