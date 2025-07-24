@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: 'center',
-    marginTop: 30,
+    marginTop: 64,
   },
   title: {
     fontSize: 40,

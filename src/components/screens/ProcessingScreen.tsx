@@ -3,7 +3,6 @@ import { View, Text, StyleSheet, Image } from 'react-native';
 
 import { green, ivory, customFonts } from '@/styles';
 import { ProcessingScreenProps, ResultResponseType } from '@/types';
-import { GeminiAPI } from '@/api';
 
 import leaf from '@/assets/images/leaf_scanning.gif';
 
@@ -32,10 +31,16 @@ export const ProcessingScreen: React.FC<ProcessingScreenProps> = ({
       "careTip": "관리 팁"
     }
 
-    만약 사진이 식물로 추정되지 않는다면 JSON 형식으로 반환해줘.
+    만약 사진이 식물로 추정되지 않는다면 응답을 다음과 같이 반환해줘.
     {
       "resStatus": "fail",
       "message": "식물로 추정되지 않는 사진입니다."
+    }
+
+    만약 올린 사진이 각각 다른 식물로 보인다면 응답을 다음과 같이 반환해줘.
+    {
+      "resStatus": "fail",
+      "message": "한 종류의 식물만 촬영해주세요."
     }
   `;
 
@@ -43,20 +48,28 @@ export const ProcessingScreen: React.FC<ProcessingScreenProps> = ({
     const initDatas = imageUris.map(uri => {
       return {
         inlineData: {
-          data: uri,
-          mimeType: 'image/jpeg',
+          data: uri.replace(/^data:image\/\w+;base64,/, ''),
+          mimeType: 'image/webp',
         },
       };
     });
-    return [...initDatas, prompts];
+    return {
+      role: 'user' as const,
+      parts: [...initDatas, { text: prompts }],
+    };
   }, [imageUris, prompts]);
 
   const callGemini = async () => {
     try {
-      const response = await GeminiAPI.post('', reqBody);
-      console.log(response.data);
+      // TODO
+      // const response = await ai.models.generateContent({
+      //   model: 'gemini-2.0-flash',
+      //   contents: reqBody,
+      //   // contents: '오늘 서울의 날씨를 알려줘', // test
+      // });
+      // console.log(response);
     } catch (error) {
-      console.error(error);
+      console.log({ error });
     }
   };
 

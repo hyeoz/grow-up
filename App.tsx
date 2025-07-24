@@ -54,19 +54,17 @@ function App() {
   };
 
   useEffect(() => {
-    const checkFirstTimeOpen = async () => {
-      try {
-        const value = await AsyncStorage.getItem(FIRST_TIME_KEY);
-
-        if (value !== null) {
-          setCurrentScreen('capture');
-        }
-      } catch (error) {
-        console.error('Error checking first time status:', error);
-      }
-    };
-
-    checkFirstTimeOpen();
+    // const checkFirstTimeOpen = async () => {
+    //   try {
+    //     const value = await AsyncStorage.getItem(FIRST_TIME_KEY);
+    //     if (value !== null) {
+    //       setCurrentScreen('capture');
+    //     }
+    //   } catch (error) {
+    //     console.error('Error checking first time status:', error);
+    //   }
+    // };
+    // checkFirstTimeOpen();
   }, []);
 
   const renderScreen = () => {

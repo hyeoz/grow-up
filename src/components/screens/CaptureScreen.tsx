@@ -15,6 +15,7 @@ import {
   Dimensions,
   StatusBar,
   Platform,
+  SafeAreaView,
 } from 'react-native';
 import {
   Camera,
@@ -51,7 +52,7 @@ export const CaptureScreen = ({ onCapture }: CaptureScreenProps) => {
   }, [hasPermission, requestPermission]);
 
   // 사진 촬영 처리
-  const handleCapture = () => {
+  const handleCapture = async () => {
     if (imageUris.length >= MAX_IMAGES) {
       Alert.alert(
         '최대 사진 수',
@@ -61,11 +62,24 @@ export const CaptureScreen = ({ onCapture }: CaptureScreenProps) => {
     }
 
     // 카메라 모달 표시
-    setIsCameraVisible(true);
+    // setIsCameraVisible(true);
     // NOTE test
-    // const photoUri =
-    //   'https://i.namu.wiki/i/-20QSrwYh8dN7C18GHjJlf9hem1qOsxA5Ea-4qCPSjTaSnd4Oq0UpuMU7Nk6kg2wVRvQHuROn6-c68EMKuwO2mc8R0_yil2jg5hTi9bPZxQtHM26ofk60t7aIPeCUf0Yhh4VzUM5Yk1EC5kZdEHyXw.webp';
-    // setImageUris([...imageUris, photoUri]);
+    const response = await fetch(
+      'https://i.namu.wiki/i/-20QSrwYh8dN7C18GHjJlf9hem1qOsxA5Ea-4qCPSjTaSnd4Oq0UpuMU7Nk6kg2wVRvQHuROn6-c68EMKuwO2mc8R0_yil2jg5hTi9bPZxQtHM26ofk60t7aIPeCUf0Yhh4VzUM5Yk1EC5kZdEHyXw.webp',
+    );
+    const blob = await response.blob();
+
+    const photoUri = (await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(blob);
+      reader.onloadend = () => {
+        resolve(reader.result as string); // 여기서 result는 "data:image/webp;base64,..."
+      };
+      reader.onerror = reject;
+    })) as string;
+
+    setImageUris([...imageUris, photoUri]);
+    //
   };
 
   // 실제 사진 촬영
@@ -168,7 +182,7 @@ export const CaptureScreen = ({ onCapture }: CaptureScreenProps) => {
   }, [isCameraVisible, device, hasPermission, takePicture, cameraRef]);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text style={styles.title}>사진 찍기</Text>
 
       <View style={styles.contentWrapper}>
@@ -181,8 +195,7 @@ export const CaptureScreen = ({ onCapture }: CaptureScreenProps) => {
               const indexedTop =
                 index === 1 ? '56%' : index === 2 ? '60%' : '50%';
               const indexedLeft =
-                (index === 1 ? 25 : index === 2 ? -25 : 0) +
-                (WIDTH / 2 - IMAGE_SPACING); // padding 고려
+                index === 1 ? '55%' : index === 2 ? '45%' : '50%';
 
               return (
                 <View
@@ -195,7 +208,7 @@ export const CaptureScreen = ({ onCapture }: CaptureScreenProps) => {
                       zIndex: imageUris.length + index,
                       transform: [
                         { translateX: '-50%' },
-                        { translateY: '-50%' },
+                        { translateY: '-100%' },
                         { rotate: `${rotateDeg}deg` },
                       ],
                     },
@@ -252,7 +265,7 @@ export const CaptureScreen = ({ onCapture }: CaptureScreenProps) => {
 
       {/* 카메라 모달 */}
       {renderCameraSection}
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -263,10 +276,11 @@ const styles = StyleSheet.create({
     backgroundColor: ivory[100],
   },
   title: {
-    fontSize: 24,
+    fontSize: 36,
     fontWeight: 'bold',
     color: green[300],
     textAlign: 'center',
+    marginTop: 64,
     marginBottom: 20,
     fontFamily: customFonts.nanumHana,
   },
@@ -309,7 +323,7 @@ const thumbnailStyle = StyleSheet.create({
   thumbnailContainer: {
     flex: 1,
     width: '100%',
-
+    height: '60%',
     position: 'relative', // 자식 요소의 absolute 포지셔닝을 위함
     justifyContent: 'center',
     alignItems: 'center',
@@ -340,6 +354,7 @@ const thumbnailStyle = StyleSheet.create({
     position: 'relative',
     justifyContent: 'center',
     alignItems: 'center',
+    transform: [{ translateY: '-50%' }],
   },
   emptyStackImage: {
     width: 32,
@@ -355,7 +370,8 @@ const buttonStyle = StyleSheet.create({
     gap: 20,
   },
   captureButton: {
-    width: '100%',
+    width: WIDTH - 40,
+    marginBottom: 20,
     backgroundColor: green[400],
     paddingVertical: 15,
     borderRadius: 10,
@@ -406,7 +422,7 @@ const buttonStyle = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 3,
     elevation: 3,
-    transform: [{ translateY: -128 }],
+    transform: [{ translateY: -200 }],
   },
   addPhotoText: {
     fontSize: 20,

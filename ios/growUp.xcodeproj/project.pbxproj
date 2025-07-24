@@ -9,7 +9,8 @@
 /* Begin PBXBuildFile section */
 		0C80B921A6F3F58F76C31292 /* libPods-growUp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-growUp.a */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		6CFA683542DB4863BFD13C91 /* Nanum_hana.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3362A72A9432467298C7E75A /* Nanum_hana.ttf */; };
+		29A914F415AE47089DFA4F5F /* NanumHana.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DFB02050043F449BADFE9EB1 /* NanumHana.ttf */; };
+		6BFCB4D1F3FA441CB14F1F3E /* NanumSquareRoundOTFL.otf in Resources */ = {isa = PBXBuildFile; fileRef = D55C63DEA55248C4B99C633F /* NanumSquareRoundOTFL.otf */; };
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		C9CE50E727946195858658FE /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
@@ -20,12 +21,13 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = growUp/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = growUp/Info.plist; sourceTree = "<group>"; };
 		13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = growUp/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		3362A72A9432467298C7E75A /* Nanum_hana.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = Nanum_hana.ttf; path = ../src/assets/fonts/Nanum_hana.ttf; sourceTree = "<group>"; };
 		3B4392A12AC88292D35C810B /* Pods-growUp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-growUp.debug.xcconfig"; path = "Target Support Files/Pods-growUp/Pods-growUp.debug.xcconfig"; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-growUp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-growUp.release.xcconfig"; path = "Target Support Files/Pods-growUp/Pods-growUp.release.xcconfig"; sourceTree = "<group>"; };
 		5DCACB8F33CDC322A6C60F78 /* libPods-growUp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-growUp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = growUp/AppDelegate.swift; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = growUp/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		D55C63DEA55248C4B99C633F /* NanumSquareRoundOTFL.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = NanumSquareRoundOTFL.otf; path = ../src/assets/fonts/NanumSquareRoundOTFL.otf; sourceTree = "<group>"; };
+		DFB02050043F449BADFE9EB1 /* NanumHana.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = NanumHana.ttf; path = ../src/assets/fonts/NanumHana.ttf; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -104,7 +106,8 @@
 		C928547A7CD8476CADB4B3E5 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				3362A72A9432467298C7E75A /* Nanum_hana.ttf */,
+				D55C63DEA55248C4B99C633F /* NanumSquareRoundOTFL.otf */,
+				DFB02050043F449BADFE9EB1 /* NanumHana.ttf */,
 			);
 			name = Resources;
 			path = "";
@@ -173,7 +176,8 @@
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				C9CE50E727946195858658FE /* PrivacyInfo.xcprivacy in Resources */,
-				6CFA683542DB4863BFD13C91 /* Nanum_hana.ttf in Resources */,
+				6BFCB4D1F3FA441CB14F1F3E /* NanumSquareRoundOTFL.otf in Resources */,
+				29A914F415AE47089DFA4F5F /* NanumHana.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
