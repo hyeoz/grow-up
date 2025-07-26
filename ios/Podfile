@@ -5,6 +5,9 @@ require Pod::Executable.execute_command('node', ['-p',
     {paths: [process.argv[1]]},
   )', __dir__]).strip
 
+# 명시적으로 프로젝트 파일 지정
+project 'growUp_jaranayo.xcodeproj'
+
 platform :ios, min_ios_version_supported
 prepare_react_native_project!
 
@@ -14,7 +17,7 @@ if linkage != nil
   use_frameworks! :linkage => linkage.to_sym
 end
 
-target 'growUp' do
+target 'growUp_jaranayo' do
   config = use_native_modules!
 
   use_react_native!(
