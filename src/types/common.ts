@@ -1,3 +1,5 @@
+export type AppScreen = 'landing' | 'capture' | 'processing' | 'result';
+
 export type LandingScreenProps = {
   onGetStarted: () => void;
 };
@@ -5,6 +7,7 @@ export type LandingScreenProps = {
 export type ProcessingScreenProps = {
   imageUris: string[];
   onProcessingComplete: (result: ResultResponseType) => void;
+  setCurrentScreen: (screen: AppScreen) => void;
 };
 
 export type ResultScreenProps = {
