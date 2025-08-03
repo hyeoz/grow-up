@@ -79,9 +79,10 @@ const styles = StyleSheet.create({
     gap: 20,
   },
   title: {
-    fontSize: 24,
+    fontSize: 36,
     fontWeight: 'bold',
     color: green[300],
+    textAlign: 'center',
     marginBottom: 20,
     fontFamily: customFonts.nanumHana,
   },
@@ -123,6 +124,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: gray[900],
     fontFamily: customFonts.nanumSquareRound,
+    lineHeight: 20,
   },
   resultStateItem: {
     flexDirection: 'column',
