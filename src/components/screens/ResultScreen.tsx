@@ -2,15 +2,24 @@ import React from 'react';
 import {
   View,
   Text,
-  // Image,
   TouchableOpacity,
   StyleSheet,
   ScrollView,
 } from 'react-native';
 
-import { green, ivory } from '@/styles/palette';
+import { gray, green, ivory } from '@/styles/palette';
 import { customFonts } from '@/styles';
 import { ResultScreenProps } from '@/types';
+
+/*
+ result 타입
+ {
+  "resStatus":"success",
+  "name":"상추",
+  "state":"현재 상태 는 잎이 싱싱해 보이며, 수분은 충분해 보입니다. 하지만 흙의 영양 상태를 확인해야 정확한 영양 상태를 알 수 있습니 다."."growthRate":"상추의 성장률은 환경 조건(햇빛, 물, 온도) 에 따라 다르지만, 잎의 상태로 보아 현재 성장률은 정상으로 보입 니다." 
+  "careTip":"•"1. 햇빛이 잘 드는 곳에 두고, 물을 꾸준히 주세 요."In2. 흙이 건조해지지 않도록 주의하고, 통풍이 잘 되도록 관리 해주세요.!n3. 잎이 너무 무성해지면 솎아주어 통풍을 개선하고, 영 양분 분배를 돕는 것이 좋습니다."
+}
+*/
 
 export const ResultScreen: React.FC<ResultScreenProps> = ({
   analysisResult,
@@ -20,29 +29,32 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
     <ScrollView style={styles.container}>
       <Text style={styles.title}>분석 결과</Text>
 
-      {/* <View style={styles.imageContainer}>
-        <Image source={{ uri: result.imageUri }} style={styles.image} />
-      </View>
+      {analysisResult.resStatus === 'success' ? (
+        <View style={styles.resultContainer}>
+          <View style={styles.resultNameItem}>
+            <Text style={styles.resultLabel}>이 식물은 아마</Text>
+            <Text style={styles.resultValue}>{analysisResult.name}</Text>
+            <Text style={styles.resultLabel}>인 것 같아요!</Text>
+          </View>
 
-      <View style={styles.resultContainer}>
-        <View style={styles.resultItem}>
-          <Text style={styles.resultLabel}>성장 단계:</Text>
-          <Text style={styles.resultValue}>{result.analysis.growthStage}</Text>
+          <View style={styles.resultStateItem}>
+            <Text style={styles.resultLabel}>식물의 상태</Text>
+            <Text style={styles.resultValue}>{analysisResult.state}</Text>
+          </View>
+
+          <View style={styles.resultCareTipItem}>
+            <Text style={styles.resultLabel}>관리 팁</Text>
+            <Text style={styles.resultValue}>{analysisResult.careTip}</Text>
+          </View>
         </View>
-
-        <View style={styles.resultItem}>
-          <Text style={styles.resultLabel}>건강 상태:</Text>
-          <Text style={styles.resultValue}>{result.analysis.health}</Text>
-        </View>
-
-        <View style={styles.resultItem}>
-          <Text style={styles.resultLabel}>추천:</Text>
+      ) : (
+        <View style={styles.resultContainer}>
           <Text style={styles.resultValue}>
-            {result.analysis.recommendation}
+            {analysisResult.message ||
+              '분석 중 문제가 발생했어요. 잠시 후 다시 시도해주세요!'}
           </Text>
         </View>
-      </View> */}
-      <Text>{JSON.stringify(analysisResult)}</Text>
+      )}
 
       <View style={styles.infoContainer}>
         <Text style={styles.infoTitle}>추가 정보</Text>
@@ -64,11 +76,13 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: ivory[100],
+    gap: 20,
   },
   title: {
-    fontSize: 24,
+    fontSize: 36,
     fontWeight: 'bold',
     color: green[300],
+    textAlign: 'center',
     marginBottom: 20,
     fontFamily: customFonts.nanumHana,
   },
@@ -89,35 +103,45 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 15,
     marginBottom: 20,
-    shadowColor: '#000',
+    shadowColor: gray[900],
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 3,
     elevation: 3,
   },
-  resultItem: {
+  resultNameItem: {
     flexDirection: 'row',
     marginBottom: 10,
+    gap: 8,
   },
   resultLabel: {
-    width: 80,
     fontSize: 16,
     fontWeight: 'bold',
     color: green[300],
     fontFamily: customFonts.nanumHana,
   },
   resultValue: {
-    flex: 1,
     fontSize: 16,
-    color: '#333',
+    color: gray[900],
     fontFamily: customFonts.nanumSquareRound,
+    lineHeight: 20,
+  },
+  resultStateItem: {
+    flexDirection: 'column',
+    marginBottom: 10,
+    gap: 8,
+  },
+  resultCareTipItem: {
+    flexDirection: 'column',
+    marginBottom: 10,
+    gap: 8,
   },
   infoContainer: {
     backgroundColor: 'white',
     borderRadius: 10,
     padding: 15,
     marginBottom: 20,
-    shadowColor: '#000',
+    shadowColor: gray[900],
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 3,
@@ -132,12 +156,12 @@ const styles = StyleSheet.create({
   },
   infoText: {
     fontSize: 14,
-    color: '#555',
+    color: gray[500],
     lineHeight: 20,
     fontFamily: customFonts.nanumSquareRound,
   },
   button: {
-    backgroundColor: green[200],
+    backgroundColor: green[400],
     paddingVertical: 15,
     borderRadius: 10,
     alignItems: 'center',

@@ -1,19 +1,10 @@
 import React, { useEffect, useMemo } from 'react';
 import { View, Text, StyleSheet, Image, Alert } from 'react-native';
 
+import callGeminiAPI from '@/hooks/gemini';
 import { green, ivory, customFonts } from '@/styles';
 import { ProcessingScreenProps, ResultResponseType } from '@/types';
-import { GoogleGenAI } from '@google/genai';
-import { REACT_APP_GEMINI_API_KEY } from '@env';
-
 import leaf from '@/assets/images/leaf_scanning.gif';
-import useGemini from '@/hooks/gemini';
-
-const ai = new GoogleGenAI({
-  vertexai: false,
-  apiKey: REACT_APP_GEMINI_API_KEY,
-  apiVersion: 'v1beta',
-});
 
 export const ProcessingScreen: React.FC<ProcessingScreenProps> = ({
   imageUris,
@@ -23,7 +14,6 @@ export const ProcessingScreen: React.FC<ProcessingScreenProps> = ({
   const [loading, setLoading] = React.useState(true);
   const [result, setResult] = React.useState<ResultResponseType | null>(null);
 
-  // TODO gemini 요청 보내기 (이미지 넣어서 프롬프트 전송)
   const prompts = `
     식물의 사진을 기반으로 식물의 상태와 성장률, 개선 방법을 알려줘. 
     결과는 다음과 같은 정보를 꼭 포함해야 해.
@@ -80,14 +70,14 @@ export const ProcessingScreen: React.FC<ProcessingScreenProps> = ({
 
   const callGemini = async () => {
     try {
-      const response = await useGemini({ reqBody: contents });
+      const response = await callGeminiAPI({ reqBody: contents });
       setLoading(false);
       const currentResult = response;
       if (currentResult) {
         setResult(currentResult);
       }
     } catch (error) {
-      const alert = Alert.alert('Error!', '분석 중 오류가 발생했습니다.', [
+      Alert.alert('Error!', '분석 중 오류가 발생했습니다.', [
         {
           text: '돌아가기',
           onPress: () => {
@@ -100,6 +90,7 @@ export const ProcessingScreen: React.FC<ProcessingScreenProps> = ({
 
   useEffect(() => {
     callGemini();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

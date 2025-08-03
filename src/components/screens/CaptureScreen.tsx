@@ -33,12 +33,14 @@ import { CaptureScreenProps } from '@/types';
 
 import CameraIcon from '@/assets/images/disabled_camera.png';
 import LeafScanning from '@/assets/images/leaf_scanning.gif';
+import { Spinner } from '../Spinner';
 
 const WIDTH = Dimensions.get('window').width;
 
 export const CaptureScreen = ({ onCapture }: CaptureScreenProps) => {
   const [imageUris, setImageUris] = useState<string[]>([]);
   const [isCameraVisible, setIsCameraVisible] = useState<boolean>(false);
+  const [isImageLoading, setIsImageLoading] = useState<boolean>(false);
   const cameraRef = useRef<Camera>(null);
 
   const { hasPermission, requestPermission } = useCameraPermission();
@@ -100,6 +102,7 @@ export const CaptureScreen = ({ onCapture }: CaptureScreenProps) => {
 
   // 앨범에서 이미지 선택
   const openImagePicker = useCallback(async () => {
+    setIsImageLoading(true);
     try {
       const result = await launchImageLibrary({
         mediaType: 'photo',
@@ -116,20 +119,19 @@ export const CaptureScreen = ({ onCapture }: CaptureScreenProps) => {
     } catch (error) {
       console.error('앨범 선택 오류:', error);
       Alert.alert('오류', '이미지 선택 중 오류가 발생했습니다.');
+    } finally {
+      setIsImageLoading(false);
     }
   }, [imageUris]);
 
   // 실제 사진 촬영
   const takePicture = useCallback(async () => {
     if (cameraRef.current) {
+      setIsImageLoading(true);
       try {
         const photo = await cameraRef.current.takePhoto({
           flash: 'auto',
         });
-
-        // 파일 경로 생성
-        // const photoUri =
-        //   Platform.OS === 'ios' ? photo.path : `file://${photo.path}`;
 
         // 파일을 base64로 변환
         const base64Image = await RNFS.readFile(
@@ -147,6 +149,8 @@ export const CaptureScreen = ({ onCapture }: CaptureScreenProps) => {
       } catch (error) {
         console.error('카메라 촬영 오류:', error);
         Alert.alert('오류', '사진 촬영 중 오류가 발생했습니다.');
+      } finally {
+        setIsImageLoading(false);
       }
     }
   }, [cameraRef, imageUris]);
@@ -224,9 +228,12 @@ export const CaptureScreen = ({ onCapture }: CaptureScreenProps) => {
 
       <View style={styles.contentWrapper}>
         {/* 이미지 썸네일 목록 */}
+
         <View style={thumbnailStyle.thumbnailContainer}>
           {/* 스택처럼 쌓인 이미지들 표시 */}
-          {imageUris.length > 0 ? (
+          {isImageLoading ? (
+            <Spinner />
+          ) : imageUris.length > 0 ? (
             imageUris.map((uri, index) => {
               const rotateDeg = index === 1 ? 5 : index === 2 ? -5 : 0;
               const indexedTop =
@@ -274,6 +281,7 @@ export const CaptureScreen = ({ onCapture }: CaptureScreenProps) => {
             </View>
           )}
         </View>
+
         {/* 이미지 추가 버튼 */}
         {/* 최대 이미지 수를 초과하지 않으면 추가 버튼 표시 */}
         {imageUris.length < MAX_IMAGES && (
