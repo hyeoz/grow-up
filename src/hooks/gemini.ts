@@ -9,7 +9,7 @@ const ai = new GoogleGenAI({
   apiVersion: 'v1beta',
 });
 
-const useGemini = async ({ reqBody }: { reqBody: GeminiRequestBody }) => {
+const callGeminiAPI = async ({ reqBody }: { reqBody: GeminiRequestBody }) => {
   try {
     const response = await ai.models.generateContent({
       model: 'gemini-2.0-flash',
@@ -41,4 +41,4 @@ function parseResponseToJson(text: string): any {
   }
 }
 
-export default useGemini;
+export default callGeminiAPI;
