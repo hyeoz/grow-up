@@ -42,7 +42,7 @@ function App() {
   const handleRestart = () => {
     setCapturedImages([]);
     setAnalysisResult(null);
-    setCurrentScreen('landing');
+    setCurrentScreen('capture');
   };
 
   const handleGetStarted = async () => {
